@@ -39,12 +39,12 @@ git push origin main
 
 ## 4. 폴더 정리 예시
 
-types/ → 알고리즘 유형별 관리
-weeks/01_week_20250624/ → 주차별 관리
+- types/ → 알고리즘 유형별 관리
+- weeks/01_week_20250624/ → 주차별 관리
 
 예)
-types/binary_search/BOJ_10816.java  
-weeks/01_week_20250624/BOJ_10816.java
+- types/binary_search/BOJ_10816.java  
+- weeks/01_week_20250624/BOJ_10816.java
 
 ## 5. README 예시
 
