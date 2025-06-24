@@ -6,7 +6,6 @@
 - **solve/문제번호_이름**: 문제 풀이용 작업 브랜치
 
 예시:  
-```bash
 git checkout -b solve/10816_number_count
 
 ## 2. 커밋 메시지 형식
