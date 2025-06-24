@@ -1,0 +1,6 @@
+# Java 관련
+*.class
+*.log
+.idea/
+.vscode/
+.DS_Store
