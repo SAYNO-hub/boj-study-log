@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -27,10 +26,9 @@ public class Main {
 
         int maxLen = 0;
         for (int len : dp) {
-            maxLen = Math.max(maxLen, len)
+            maxLen = Math.max(maxLen, len);
         }
 
         System.out.println(maxLen);
     }
 }
-
