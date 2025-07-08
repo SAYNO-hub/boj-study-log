@@ -2,78 +2,58 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    static int N;
-    static Map<Integer, List<Time>> meetings = new HashMap<>();
-
     static class Time {
-        int end, start;
+        int start, end;
 
-        Time(int end, int start) {
-            this.end = end;
+        Time(int start, int end) {
             this.start = start;
+            this.end = end;
         }
-    }
-
-    private static int maxMeetingCount(List<Integer> sortedKeys) {
-        int cnt = 0;
-        int now = 0;
-
-        for (int key : sortedKeys) {
-            for (Time t : meetings.get(key)) {
-                if (t.start >= now) {
-                    ++cnt;
-                    now = t.end;
-                }
-            }
-        }
-
-        return cnt;
     }
 
     public static void main(String[] args) throws IOException {
         try(BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 
-            N = Integer.parseInt(br.readLine());
+            int N = Integer.parseInt(br.readLine());
+
+            List<Time> meetings = new ArrayList<>();
 
             for (int i = 0; i < N; i++) {
                 StringTokenizer st = new StringTokenizer(br.readLine());
                 int start = Integer.parseInt(st.nextToken());
                 int end = Integer.parseInt(st.nextToken());
 
-                meetings.computeIfAbsent(end, k -> new ArrayList<>()).add(new Time(end, start));
+                meetings.add(new Time(start, end));
             }
 
-            // key를 따로 정렬해서 순회 (TreeMap이 아닌 HashMap을 사용하는 경우 필요)
-            List<Integer> sortedKeys = new ArrayList<>(meetings.keySet());
-            Collections.sort(sortedKeys);
+            // 1. end 기준 오름차순 정렬
+            // 2. end 같으면 start 기준 오름차순 정렬
+            meetings.sort((a, b) -> {
+                if (a.end == b.end) return a.start - b.start;
+                return a.end - b.end;
+            });
 
-            // end가 같은 회의들 사이에서 start가 빠른 순으로 정렬
-            for (int key : meetings.keySet()) {
-                meetings.get(key).sort((a, b) -> a.start - b.start);
+            // 그리디하게 회의 선택
+            int now = 0;
+            int cnt = 0;
+            for (Time t : meetings) {
+                if (t.start >= now) {
+                    cnt++;
+                    now = t.end;
+                }
             }
 
+            System.out.println(cnt);
 
             // 예시: meetings 전체 출력
-            // for (int key : meetings.keySet()) {
-            //     System.out.println("end = " + key);
-            //     for (Time t : meetings.get(key)) {
-            //         System.out.println("  → start at: " + t.start);
-            //     }
+            // for (Time t : meetings) {
+            //     System.out.println("start: " + t.start + ", end: " + t.end);
             // }
-
-            // TreeMap
-            // System.out.println(maxMeetingCount(0));
-
-            // HashMap
-            System.out.println(maxMeetingCount(sortedKeys));
         }
 
     }
