@@ -2,15 +2,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 public class Main {
 
     static int N;
-    static Map<Integer, List<Time>> meetings = new TreeMap<>();
+    static Map<Integer, List<Time>> meetings = new HashMap<>();
 
     static class Time {
         int end, start;
@@ -21,11 +22,11 @@ public class Main {
         }
     }
 
-    private static int maxMeetingCount(int start) {
+    private static int maxMeetingCount(List<Integer> sortedKeys) {
         int cnt = 0;
         int now = 0;
 
-        for (int key : meetings.keySet()) {
+        for (int key : sortedKeys) {
             for (Time t : meetings.get(key)) {
                 if (t.start >= now) {
                     ++cnt;
@@ -50,6 +51,10 @@ public class Main {
                 meetings.computeIfAbsent(end, k -> new ArrayList<>()).add(new Time(end, start));
             }
 
+            // key를 따로 정렬해서 순회 (TreeMap이 아닌 HashMap을 사용하는 경우 필요)
+            List<Integer> sortedKeys = new ArrayList<>(meetings.keySet());
+            Collections.sort(sortedKeys);
+
             // end가 같은 회의들 사이에서 start가 빠른 순으로 정렬
             for (int key : meetings.keySet()) {
                 meetings.get(key).sort((a, b) -> a.start - b.start);
@@ -64,7 +69,11 @@ public class Main {
             //     }
             // }
 
-            System.out.println(maxMeetingCount(0));
+            // TreeMap
+            // System.out.println(maxMeetingCount(0));
+
+            // HashMap
+            System.out.println(maxMeetingCount(sortedKeys));
         }
 
     }
