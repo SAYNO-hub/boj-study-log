@@ -19,33 +19,28 @@ public class Main {
 
         int N = Integer.parseInt(br.readLine());
         int[] ropes = new int[N];
-        int minRope = 0;
 
         for (int i = 0; i < N; i++) {
             ropes[i] = Integer.parseInt(br.readLine());
         }
-        Arrays.sort(ropes);
-        minRope = ropes[0];
-        
-        Weight curWeight = new Weight(minRope, N);
-        Weight maxWeight = new Weight(minRope, N);
+        Arrays.sort(ropes); // 오름차순 정렬
 
-        for (int i = 1; i < N; i++) {
-            if (curWeight.min <= ropes[i]) {
-                curWeight.min = ropes[i];
-                curWeight.count = curWeight.count - 1;
+        
+        Weight maxWeight = new Weight(ropes[0], N); // 초기값
+
+        for (int i = 0; i < N; i++) {
+
+            int min = ropes[i]; // 현재 사용할 최소 무게
+            int count = N - i; // 남은 로프 수
+            int current = min * count;
+
+            if (current > maxWeight.min * maxWeight.count) {
+                maxWeight.min = min;
+                maxWeight.count = count; 
             }
 
-            int current = curWeight.min * curWeight.count;
-            int max = maxWeight.min * maxWeight.count;
-
-            if (current <= max) continue;
-
-            maxWeight.min = curWeight.min;
-            maxWeight.count = curWeight.count; 
         }
 
-        int max = maxWeight.min * maxWeight.count;
-        System.out.println(max);
+        System.out.println(maxWeight.min * maxWeight.count);
     }
 }
