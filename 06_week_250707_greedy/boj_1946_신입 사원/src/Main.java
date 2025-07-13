@@ -8,6 +8,7 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int T = Integer.parseInt(br.readLine());
+
         while (T-- > 0) {
             int N = Integer.parseInt(br.readLine());
             int[][] applicants = new int[N][2];
@@ -28,7 +29,7 @@ public class Main {
 
                 if (compareRank > rank) 
                     ++maxNum;
-                    compareRank = rank;
+                    compareRank = Math.min(compareRank, rank);
 
             }
 
