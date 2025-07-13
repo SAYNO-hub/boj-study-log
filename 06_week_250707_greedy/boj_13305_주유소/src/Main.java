@@ -18,18 +18,17 @@ public class Main {
         }
         prices[N - 1] = Integer.parseInt(stPrice.nextToken());
 
-        long firstExpense = (long) roads[0] * prices[0];
-        long result = firstExpense;
-        int beforePrice = prices[0];
+        long totalCost = 0;
+        int minPrice = prices[0];
 
-        for (int i = 1; i < N - 1; i++) {
-            if (beforePrice > prices[i]) {
-                beforePrice = prices[i];
+        for (int i = 0; i < N - 1; i++) {
+            if (prices[i] < minPrice) {
+                minPrice = prices[i];
             }
-            result += (long) roads[i] * beforePrice;
+            totalCost += (long) roads[i] * minPrice;
         }
 
-        System.out.println(result);
+        System.out.println(totalCost);
     }
 }
  
