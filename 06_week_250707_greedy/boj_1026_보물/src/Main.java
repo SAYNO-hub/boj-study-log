@@ -10,30 +10,28 @@ public class Main {
         int N = Integer.parseInt(br.readLine());
         int[] A = new int[N];
         int[] B = new int[N];
+        int[][] bWithIndex = new int[N][2]; // [B값, 원래 인덱스]
 
-        int[][] C = new int[N][2]; // B와 인덱스 정보를 함께 보관
-
+        // 입력
         StringTokenizer stA = new StringTokenizer(br.readLine());
         StringTokenizer stB = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             A[i] = Integer.parseInt(stA.nextToken());
             B[i] = Integer.parseInt(stB.nextToken());
 
-            C[i][0] = B[i]; // 값
-            C[i][1] = i;    // 원래 인덱스
+            bWithIndex[i][0] = B[i]; // 값
+            bWithIndex[i][1] = i;    // 원래 인덱스
         }
 
-        Arrays.sort(A); // A : 오름차순 정렬
-        Arrays.sort(C, (a, b) -> Integer.compare(b[0], a[0])); // B를 값 기준 내림차순 정렬 = 2차원 배열 C를 첫 번째 열 기준으로 내림차순 정렬
+        // 정렬
+        Arrays.sort(A); // A : 오름차순 
+        Arrays.sort(bWithIndex, (a, b) -> Integer.compare(b[0], a[0])); // B를 값 기준 내림차순 정렬 = 2차원 배열 C를 첫 번째 열 기준으로 내림차순 정렬
 
-        int[] newA = new int[N];
-        for (int i = 0; i < N; i++) {
-            newA[C[i][1]] = A[i]; // B의 인덱스에 맞게 A를 재배치
-        }
-
+        // 계산 (A의 작은 값과 B의 큰 값 매칭)
         int result = 0;
         for (int i = 0; i < N; i++) {
-            result += newA[i] * B[i]; // 고정된 B와 최적화된 A를 곱함
+            int bIndex = bWithIndex[i][1]; // B의 원래 위치
+            result += A[i] * B[bIndex]; // 고정된 B와 오름차순된 A를 곱함
         }
 
         System.out.println(result);
