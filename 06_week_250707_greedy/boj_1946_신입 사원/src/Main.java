@@ -18,22 +18,23 @@ public class Main {
                 applicants[i][0] = Integer.parseInt(st.nextToken());
                 applicants[i][1] = Integer.parseInt(st.nextToken());
             }
+            
+            // applicants : 서류 성적 기준 오름차순 정렬
+            Arrays.sort(applicants, (a, b) -> Integer.compare(a[0], b[0])); 
 
-            Arrays.sort(applicants, (a, b) -> Integer.compare(a[0], b[0])); // applicants : 서류 성적 기준 오름차순 정렬
-
-            int maxNum = 1;
-            int compareRank = applicants[0][1];
+            int selectedCount = 1; // 첫 번째 지원자는 무조건 뽑힘
+            int minInterviewRank = applicants[0][1];
 
             for (int i = 1; i < N; i++) {
-                int rank = applicants[i][1];
+                int interviewRank = applicants[i][1];
 
-                if (compareRank > rank) 
-                    ++maxNum;
-                    compareRank = Math.min(compareRank, rank);
-
+                if (interviewRank < minInterviewRank) {
+                    selectedCount++;
+                    minInterviewRank = interviewRank;
+                }
             }
 
-            System.out.println(maxNum);
+            System.out.println(selectedCount);
         }
     }
 }
