@@ -25,22 +25,17 @@ public class Main {
         }
         Arrays.sort(ropes); // 오름차순 정렬
 
-        
-        Weight maxWeight = new Weight(ropes[0], N); // 초기값
+        int maxWeight = ropes[0] * N; // 초기값 
 
         for (int i = 0; i < N; i++) {
 
             int min = ropes[i]; // 현재 사용할 최소 무게
-            int count = N - i; // 남은 로프 수
+            int count = N - i;  // 남은 로프 수
             int current = min * count;
 
-            if (current > maxWeight.min * maxWeight.count) {
-                maxWeight.min = min;
-                maxWeight.count = count; 
-            }
-
+            maxWeight = Math.max(maxWeight, current);
         }
 
-        System.out.println(maxWeight.min * maxWeight.count);
+        System.out.println(maxWeight);
     }
 }
