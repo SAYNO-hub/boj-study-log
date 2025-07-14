@@ -20,7 +20,6 @@ public class Main {
         try(BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 
             int N = Integer.parseInt(br.readLine());
-
             List<Time> meetings = new ArrayList<>();
 
             for (int i = 0; i < N; i++) {
@@ -38,7 +37,7 @@ public class Main {
                 return a.end - b.end;
             });
 
-            // 그리디하게 회의 선택
+            // 회의 선택
             int now = 0;
             int cnt = 0;
             for (Time t : meetings) {
