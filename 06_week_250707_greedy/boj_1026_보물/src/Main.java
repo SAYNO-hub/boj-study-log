@@ -25,7 +25,7 @@ public class Main {
 
         // 정렬
         Arrays.sort(A); // A : 오름차순 
-        Arrays.sort(bWithIndex, (a, b) -> Integer.compare(b[0], a[0])); // B를 값 기준 내림차순 정렬 = 2차원 배열 C를 첫 번째 열 기준으로 내림차순 정렬
+        Arrays.sort(bWithIndex, (a, b) -> Integer.compare(b[0], a[0])); // B를 값 기준 내림차순 정렬 = 2차원 배열을 첫 번째 열 기준으로 내림차순 정렬
 
         // 계산 (A의 작은 값과 B의 큰 값 매칭)
         int result = 0;
