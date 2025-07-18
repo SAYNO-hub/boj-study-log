@@ -1,31 +1,28 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.StringTokenizer;
+import java.util.HashSet;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
 
-        HashMap<String, Integer> words = new HashMap<>();    
+        String[] input = br.readLine().split(" ");
+        int N = Integer.parseInt(input[0]);
+        int M = Integer.parseInt(input[1]);
 
+        HashSet<String> wordSet = new HashSet<>();
+    
         for (int i = 0; i < N; i++) {
-            String word = br.readLine();
-            words.put(word, 1);
+            wordSet.add(br.readLine());
         }
 
-        int cnt = 0;
+        int count = 0;
         for (int i = 0; i < M; i++) {
-            String question = br.readLine();
-
-            if (words.containsKey(question)) {
-                cnt++;
+            if (wordSet.contains(br.readLine())) {
+                count++;
             }
         }
 
-        System.out.println(cnt);
+        System.out.println(count);
     }
 }
