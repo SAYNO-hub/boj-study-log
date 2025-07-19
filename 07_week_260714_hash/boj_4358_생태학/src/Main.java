@@ -8,7 +8,7 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        
         Map <String, Integer> speciesMap = new HashMap<>();
         int totalCount = 0;
 
@@ -20,16 +20,18 @@ public class Main {
 
         List<Map.Entry<String, Integer>> entries = new ArrayList<>(speciesMap.entrySet());
         
-        entries.sort((e1, e2) -> e1.getKey().compareTo(e2.getKey()));
-        
+        // 기존 정렬 방식 
+        // entries.sort((e1, e2) -> e1.getKey().compareTo(e2.getKey()));
+
+        // 알파벳 오름차순 정렬
+        entries.sort(Map.Entry.comparingByKey());
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < entries.size(); i++) {
-            float percent = (float) entries.get(i).getValue() / totalCount * 100;
-            String result = String.format("%.4f", percent);
+        for (Map.Entry<String, Integer> entry : entries) {
+            float percent = (float) entry.getValue() * 100 / totalCount;
 
-            sb.append(entries.get(i).getKey()).append(" ");
-            sb.append(result).append("\n");
+            sb.append(entry.getKey()).append(" ");
+            sb.append(String.format("%.4f", percent)).append("\n");
         }
 
         System.out.println(sb);
