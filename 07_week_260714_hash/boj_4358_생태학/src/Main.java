@@ -33,6 +33,6 @@ public class Main {
                 .append("\n");
         }
 
-        System.out.println(sb);
+        System.out.print(sb);
     }
 }
