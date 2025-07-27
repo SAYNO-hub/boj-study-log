@@ -17,8 +17,8 @@ public class Main {
         String bestSeller = Collections.max(
             bookFrequency.entrySet(),
             (a, b) -> {
-                int freqCompare = Integer.compare(b.getValue(), a.getValue());
-                return (freqCompare != 0) ? freqCompare : a.getKey().compareTo(b.getKey());
+                int freqCompare = Integer.compare(b.getValue(), a.getValue()); // 빈도 내림차순
+                return (freqCompare != 0) ? freqCompare : b.getKey().compareTo(a.getKey()); // 사전순 앞서는 키가 우선이므로 반대로
             }
         ).getKey();
 
