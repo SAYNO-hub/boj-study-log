@@ -14,8 +14,7 @@ public class Main {
     static ArrayList<Edge>[] reverseGraph;
 
     private static class Edge implements Comparable<Edge> {
-        int pos;
-        int time;
+        int pos, time;
 
         Edge(int pos, int time) {
             this.pos = pos;
@@ -48,15 +47,15 @@ public class Main {
             reverseGraph[to].add(new Edge(from, time)); // 역방향 그래프
         }
 
-        int[] distFromParty = dijkstra(partyCity, graph);
-        int[] distToParty = dijkstra(partyCity, reverseGraph);
+        int[] distancesFromParty = dijkstra(partyCity, graph);
+        int[] distancesToParty = dijkstra(partyCity, reverseGraph);
 
         int maxTime = 0;
         for (int i = 1; i <= cityCount; i++) {
-            if (distFromParty[i] == INF || distToParty[i] == INF)
+            if (distancesFromParty[i] == INF || distancesToParty[i] == INF) {
                 continue;
-
-            maxTime = Math.max(maxTime, distToParty[i] + distFromParty[i]);
+            }
+            maxTime = Math.max(maxTime, distancesFromParty[i] + distancesToParty[i]);
         }
         System.out.println(maxTime);
     }
@@ -71,11 +70,11 @@ public class Main {
     }
 
     private static int[] dijkstra(int start, ArrayList<Edge>[] graph) {
-        int[] dist = new int[cityCount + 1];
-        Arrays.fill(dist, INF);
+        int[] distances = new int[cityCount + 1];
+        Arrays.fill(distances, INF);
 
         PriorityQueue<Edge> pq = new PriorityQueue<>();
-        dist[start] = 0;
+        distances[start] = 0;
         pq.offer(new Edge(start, 0));
 
         while (!pq.isEmpty()) {
@@ -83,19 +82,19 @@ public class Main {
             int curPos = current.pos;
             int curTime = current.time;
 
-            if (dist[curPos] < curTime)
+            if (distances[curPos] < curTime) {
                 continue;
+            }
 
             for (Edge neighbor : graph[curPos]) {
                 int nextTime = curTime + neighbor.time;
 
-                if (nextTime < dist[neighbor.pos]) {
-                    dist[neighbor.pos] = nextTime;
+                if (nextTime < distances[neighbor.pos]) {
+                    distances[neighbor.pos] = nextTime;
                     pq.offer(new Edge(neighbor.pos, nextTime));
                 }
             }
         }
-
-        return dist;
+        return distances;
     }
 }
