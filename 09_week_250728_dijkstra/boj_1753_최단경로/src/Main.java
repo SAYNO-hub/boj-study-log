@@ -6,78 +6,96 @@ public class Main {
 
     static final int INF = Integer.MAX_VALUE;
     static ArrayList<Node>[] graph;
-    static int[] distance;
+    static int[] distances;
 
     static class Node implements Comparable<Node> {
-        int index; // 목적지 노드 번호
-        int dist; // 가중치 (거리)
+        int vertex; // 목적지 노드 번호
+        int weight; // 가중치 (거리)
 
-        Node(int index, int dist) {
-            this.index = index;
-            this.dist = dist;
+        Node(int vertex, int weight) {
+            this.vertex = vertex;
+            this.weight = weight;
         }
 
         @Override
         public int compareTo(Node other) {
-            return Integer.compare(this.dist, other.dist);
+            return Integer.compare(this.weight, other.weight);
+        }
+
+        @Override
+        public String toString() {
+            // 디버깅용으로 Node 객체 내용을 쉽게 확인하기 위해 오버라이드
+            // 예를 들어, 디버깅 시 PriorityQueue에 들어있는 노드를 출력하면
+            // Node(정점번호, 가중치) 형태로 출력되어 상태를 빠르게 파악할 수 있음
+            return "(" + vertex + ", " + weight + ")";
         }
     }
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         StringTokenizer st = new StringTokenizer(br.readLine());
+        int vertexCount = Integer.parseInt(st.nextToken()); // 정점 개수 V
+        int edgeCount = Integer.parseInt(st.nextToken()); // 간선 개수 E
+        int start = Integer.parseInt(br.readLine()); // 시작 정점의 번호 K
 
-        int V = Integer.parseInt(st.nextToken()); // 정점 개수 V
-        int E = Integer.parseInt(st.nextToken()); // 간선 개수 E
-        int K = Integer.parseInt(br.readLine()); // 시작 정점의 번호 K
+        initGraph(vertexCount);
+        distances = new int[vertexCount + 1];
+        Arrays.fill(distances, INF);
 
-        distance = new int[V + 1];
-        Arrays.fill(distance, INF);
-
-        graph = new ArrayList[V + 1];
-        for (int i = 0; i <= V; i++) {
-            graph[i] = new ArrayList<>();
-        }
-
-        for (int i = 0; i < E; i++) {
+        for (int i = 0; i < edgeCount; i++) {
             st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            int w = Integer.parseInt(st.nextToken());
+            int from = Integer.parseInt(st.nextToken());
+            int to = Integer.parseInt(st.nextToken());
+            int weight = Integer.parseInt(st.nextToken());
 
-            graph[u].add(new Node(v, w));
+            graph[from].add(new Node(to, weight));
         }
 
-        dijkstra(K);
+        dijkstra(start);
 
-        for (int i = 1; i <= V; i++) {
-            if (distance[i] == INF)
-                System.out.println("INF");
-            else
-                System.out.println(distance[i]);
+        printDistances(vertexCount);
+    }
+
+    private static void initGraph(int vertexCount) {
+        graph = new ArrayList[vertexCount + 1];
+        for (int i = 0; i <= vertexCount; i++) {
+            graph[i] = new ArrayList<>();
         }
     }
 
     static void dijkstra(int start) {
         PriorityQueue<Node> pq = new PriorityQueue<>();
-        distance[start] = 0;
+        distances[start] = 0;
         pq.offer(new Node(start, 0));
 
         while (!pq.isEmpty()) {
             Node current = pq.poll();
-            int now = current.index;
+            int currentVertex = current.vertex;
 
-            if (current.dist > distance[now])
+            if (current.weight > distances[currentVertex])
                 continue; // 이미 처리된 경우 건너뛰기
 
-            for (Node next : graph[now]) {
-                int cost = distance[now] + next.dist;
+            for (Node neighbor : graph[currentVertex]) {
+                int newDist = distances[currentVertex] + neighbor.weight;
 
-                if (cost < distance[next.index]) {
-                    distance[next.index] = cost;
-                    pq.offer(new Node(next.index, cost));
+                if (newDist < distances[neighbor.vertex]) {
+                    distances[neighbor.vertex] = newDist;
+                    pq.offer(new Node(neighbor.vertex, newDist));
                 }
             }
         }
+    }
+
+    private static void printDistances(int vertexCount) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= vertexCount; i++) {
+            if (distances[i] == INF) {
+                sb.append("INF\n");
+            } else {
+                sb.append(distances[i]).append('\n');
+            }
+        }
+        System.out.print(sb);
     }
 }
