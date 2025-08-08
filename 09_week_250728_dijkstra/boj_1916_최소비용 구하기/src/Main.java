@@ -8,21 +8,21 @@ import java.util.StringTokenizer;
 public class Main {
 
     static final int INF = Integer.MAX_VALUE;
-    static ArrayList<Node>[] routes;
+    static ArrayList<Edge>[] graph;
     static int[] distances;
 
-    static class Node implements Comparable<Node> {
-        int vertex;
-        int weight;
+    private static class Edge implements Comparable<Edge> {
+        int target;
+        int cost;
 
-        Node(int vertex, int weight) {
-            this.vertex = vertex;
-            this.weight = weight;
+        Edge(int target, int cost) {
+            this.target = target;
+            this.cost = cost;
         }
 
         @Override
-        public int compareTo(Node other) {
-            return Integer.compare(this.weight, other.weight);
+        public int compareTo(Edge other) {
+            return Integer.compare(this.cost, other.cost);
         }
     }
 
@@ -32,7 +32,7 @@ public class Main {
         int cityCount = Integer.parseInt(br.readLine());
         int busCount = Integer.parseInt(br.readLine());
 
-        initRoutes(cityCount);
+        initGraph(cityCount);
         distances = new int[cityCount + 1];
         Arrays.fill(distances, INF);
 
@@ -40,9 +40,9 @@ public class Main {
             StringTokenizer st = new StringTokenizer(br.readLine());
             int from = Integer.parseInt(st.nextToken());
             int to = Integer.parseInt(st.nextToken());
-            int weight = Integer.parseInt(st.nextToken());
+            int cost = Integer.parseInt(st.nextToken());
 
-            routes[from].add(new Node(to, weight));
+            graph[from].add(new Edge(to, cost));
         }
 
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -51,40 +51,36 @@ public class Main {
 
         dijkstra(start);
 
-        printCosts(end);
+        System.out.println(distances[end]);
     }
 
-    private static void initRoutes(int cityCount) {
-        routes = new ArrayList[cityCount + 1];
-        for (int i = 0; i <= cityCount; i++) {
-            routes[i] = new ArrayList<>();
+    private static void initGraph(int size) {
+        graph = new ArrayList[size + 1];
+        for (int i = 0; i <= size; i++) {
+            graph[i] = new ArrayList<>();
         }
     }
 
     private static void dijkstra(int start) {
-        PriorityQueue<Node> pq = new PriorityQueue<>();
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
         distances[start] = 0;
-        pq.offer(new Node(start, 0));
+        pq.offer(new Edge(start, 0));
 
         while (!pq.isEmpty()) {
-            Node current = pq.poll();
-            int currentVertex = current.vertex;
+            Edge current = pq.poll();
+            int currentNode = current.target;
 
-            if (current.weight > distances[currentVertex])
+            if (current.cost > distances[currentNode])
                 continue;
 
-            for (Node neighbor : routes[currentVertex]) {
-                int newCost = distances[currentVertex] + neighbor.weight;
+            for (Edge neighbor : graph[currentNode]) {
+                int newCost = distances[currentNode] + neighbor.cost;
 
-                if (newCost < distances[neighbor.vertex]) {
-                    distances[neighbor.vertex] = newCost;
-                    pq.offer(new Node(neighbor.vertex, newCost));
+                if (newCost < distances[neighbor.target]) {
+                    distances[neighbor.target] = newCost;
+                    pq.offer(new Edge(neighbor.target, newCost));
                 }
             }
         }
-    }
-
-    private static void printCosts(int end) {
-        System.out.println(distances[end]);
     }
 }
