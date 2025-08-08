@@ -1,13 +1,13 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    static ArrayList<Spot>[] graph;
+    static final int MAX = 100_000;
+    static final int INF = 100_000;    
     static int[] distances;
 
     private static class Spot implements Comparable<Spot> {
@@ -27,13 +27,13 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
         StringTokenizer st = new StringTokenizer(br.readLine());
+
         int start = Integer.parseInt(st.nextToken());
         int target = Integer.parseInt(st.nextToken());
 
-        distances = new int[100000 + 1];
-        Arrays.fill(distances, 100000);
+        distances = new int[MAX + 1];
+        Arrays.fill(distances, INF);
 
         dijkstra(start);
 
@@ -42,8 +42,8 @@ public class Main {
 
     private static void dijkstra(int start) {
         PriorityQueue<Spot> pq = new PriorityQueue<>();
-        pq.offer(new Spot(0, start));
         distances[start] = 0;
+        pq.offer(new Spot(0, start));
 
         while (!pq.isEmpty()) {
             Spot current = pq.poll();
@@ -53,29 +53,23 @@ public class Main {
             if (distances[curPos] < curTime)
                 continue;
 
-            // 1) 순간이동 (가중치 0)
-            int nextPos = 2 * curPos;
-            int nextTime = curTime;
-            if ((nextPos <= 100000) && (distances[nextPos] > nextTime)) {
-                distances[nextPos] = nextTime;
-                pq.add(new Spot(nextTime, nextPos));
-            }
+            // 1) 순간이동 (0초)
+            addNextSpot(pq, curPos * 2, curTime);
 
-            // 2) 앞으로 걷기 (가중치 1)
-            nextPos = curPos + 1;
-            nextTime = curTime + 1;
-            if ((nextPos <= 100000) && (distances[nextPos] > nextTime)) {
-                distances[nextPos] = nextTime;
-                pq.add(new Spot(nextTime, nextPos));
-            }
+            // 2) 앞으로 걷기 (1초)
+            addNextSpot(pq, curPos + 1, curTime + 1);
 
-            // 3) 뒤로 걷기 (가중치 1)
-            nextPos = curPos - 1;
-            nextTime = curTime + 1;
-            if ((0 <= nextPos) && (distances[nextPos] > nextTime)) {
-                distances[nextPos] = nextTime;
-                pq.add(new Spot(nextTime, nextPos));
-            }
+            // 3) 뒤로 걷기 (1초)
+            addNextSpot(pq, curPos - 1, curTime + 1);
+        }
+    }
+
+    private static void addNextSpot(PriorityQueue<Spot> pq, int nextPos, int nextTime) {
+        if (nextPos < 0 || nextPos > MAX) return;
+
+        if (distances[nextPos] > nextTime) {
+            distances[nextPos] = nextTime;
+            pq.offer(new Spot(nextTime, nextPos));
         }
     }
 }
