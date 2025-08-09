@@ -4,8 +4,8 @@ import java.util.*;
 
 public class Main {
 
-    static final int INF = Integer.MAX_VALUE;
-    static ArrayList<Node>[] graph;
+    private static final int INF = 200_000_000; // 오버플로 방지
+    private static List<Node>[] graph;
 
     static private class Node implements Comparable<Node> {
         int vertex, cost;
@@ -25,12 +25,12 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int nodeCount = Integer.parseInt(st.nextToken());
-        int edgeCount = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
+        int e = Integer.parseInt(st.nextToken());
 
-        initGraph(nodeCount);
+        initGraph(n);
 
-        for (int i = 0; i < edgeCount; i++) {
+        for (int i = 0; i < e; i++) {
             st = new StringTokenizer(br.readLine());
             int from = Integer.parseInt(st.nextToken());
             int to = Integer.parseInt(st.nextToken());
@@ -44,22 +44,14 @@ public class Main {
         int v1 = Integer.parseInt(st.nextToken());
         int v2 = Integer.parseInt(st.nextToken());
 
-        long route1 = 0;
-        route1 += dijkstra(1, v1, nodeCount);
-        route1 += dijkstra(v1, v2, nodeCount);
-        route1 += dijkstra(v2, nodeCount, nodeCount);
-
-        long route2 = 0;
-        route2 += dijkstra(1, v2, nodeCount);
-        route2 += dijkstra(v2, v1, nodeCount);
-        route2 += dijkstra(v1, nodeCount, nodeCount);
+        long route1 = calcRoute(1, v1, v2, n);
+        long route2 = calcRoute(1, v2, v1, n);
 
         long answer = Math.min(route1, route2);
-        if (answer >= INF)
-            answer = -1;
-        System.out.println(answer);
+        System.out.println(answer >= INF ? -1 : answer);
     }
 
+    /** 그래프 초기화 */
     private static void initGraph(int size) {
         graph = new ArrayList[size + 1];
         for (int i = 0; i <= size; i++) {
@@ -67,8 +59,21 @@ public class Main {
         }
     }
 
-    private static int dijkstra(int start, int end, int N) {
-        int[] dist = new int[N + 1];
+    /** 특정 경로의 거리 합 계산 */
+    private static long calcRoute(int start, int mid1, int mid2, int n) {
+        long dist1 = dijkstra(start, mid1, n);
+        long dist2 = dijkstra(mid1, mid2, n);
+        long dist3 = dijkstra(mid2, n, n);
+
+        // 중간에 하나라도 도달 불가능이면 INF 반환
+        if (dist1 >= INF || dist2 >= INF || dist3 >= INF)
+            return INF;
+        return dist1 + dist2 + dist3;
+    }
+
+    /** 다익스트라 알고리즘 */
+    private static int dijkstra(int start, int end, int n) {
+        int[] dist = new int[n + 1];
         Arrays.fill(dist, INF);
         dist[start] = 0;
 
@@ -82,14 +87,12 @@ public class Main {
 
             for (Node next : graph[cur.vertex]) {
                 int newCost = dist[cur.vertex] + next.cost;
-
                 if (newCost < dist[next.vertex]) {
                     dist[next.vertex] = newCost;
                     pq.offer(new Node(next.vertex, newCost));
                 }
             }
         }
-
         return dist[end];
     }
 }
