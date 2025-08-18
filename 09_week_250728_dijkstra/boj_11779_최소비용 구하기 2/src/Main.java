@@ -1,21 +1,16 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
 
     static final int INF = Integer.MAX_VALUE;
     static ArrayList<Node>[] graph;
     static int[] distances;
-    static int[] prev; // 경로 추적용
+    static int[] prev; // path tracking
 
     private static class Node implements Comparable<Node> {
-        int index;
-        int cost;
+        int index, cost;
 
         Node(int index, int cost) {
             this.index = index;
@@ -31,8 +26,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int n = Integer.parseInt(br.readLine()); // 도시 개수
-        int m = Integer.parseInt(br.readLine()); // 버스 개수
+        int n = Integer.parseInt(br.readLine()); // number of cities
+        int m = Integer.parseInt(br.readLine()); // number of buses
 
         initGraph(n);
         distances = new int[n + 1];
@@ -56,17 +51,15 @@ public class Main {
         dijkstra(start);
 
         // 최단 경로 복원
-        ArrayList<Integer> path = new ArrayList<>();
-        for (int at = end; at != -1; at = prev[at]) {
-            path.add(at);
-        }
-        Collections.reverse(path);
+        ArrayList<Integer> path = restorePath(end);
 
         System.out.println(distances[end]);
         System.out.println(path.size());
-        for (int city : path) {
-            System.out.print(city + " ");
-        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int city : path)
+            sb.append(city).append(" ");
+        System.out.println(sb.toString().trim()); // trim trailing space
     }
 
     private static void initGraph(int size) {
@@ -92,9 +85,18 @@ public class Main {
                 if (newCost < distances[next.index]) {
                     distances[next.index] = newCost;
                     pq.offer(new Node(next.index, newCost));
-                    prev[next.index] = cur.index; // 이전 도시 기록
+                    prev[next.index] = cur.index; // track path
                 }
             }
         }
+    }
+
+    private static ArrayList<Integer> restorePath(int end) {
+        ArrayList<Integer> path = new ArrayList<>();
+        for (int at = end; at != -1; at = prev[at]) {
+            path.add(at);
+        }
+        Collections.reverse(path);
+        return path;
     }
 }
